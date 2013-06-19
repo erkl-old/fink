@@ -1,3 +1,29 @@
+var events = require('events')
+  , fs = require('fs')
+
+var handle = new events.EventEmitter()
+
+// attach our listeners to all functions we're interested in
+for (var key in fs) {
+  fs[key] = /^[a-z]/.test(key) ? wrap(fs[key], key) : fs[key]
+}
+
+// intercepts all calls to `fn`, and broadcasts them to the
+// global handle
+function wrap(fn, name) {
+  return function () {
+    var args = Array.prototype.slice.call(arguments)
+      , stack = trace(1)
+
+    // skip calls originating from inside the fs module itself
+    if (stack.length === 0 || stack[0].file !== 'fs.js') {
+      handle.emit(name, args, stack)
+    }
+
+    return fn.apply(null, args)
+  }
+}
+
 // returns a stack trace ending `skip` levels above the caller
 function trace(skip) {
   return (new Error('')).stack
@@ -20,3 +46,5 @@ function trace(skip) {
         })
     })
 }
+
+module.exports = handle
