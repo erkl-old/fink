@@ -18,6 +18,7 @@ function wrap(fn, name) {
     // skip calls originating from inside the fs module itself
     if (stack.length === 0 || stack[0].file !== 'fs.js') {
       handle.emit(name, args, stack)
+      handle.emit('call', name, args, stack)
     }
 
     return fn.apply(null, args)
