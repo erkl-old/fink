@@ -1,6 +1,6 @@
 { "name": "fink"
 , "description": "monitor which files your node.js process touches"
-, "version": "0.0.0"
+, "version": "0.1.0"
 , "repository":
   { "type": "git"
   , "url": "http://github.com/erkl/fink.git"
